@@ -30,7 +30,7 @@ mov rbp, rsp
 
 This would make the stack look like this (remember that stacks grow *downwards* in memory):
 
-![](./cfi-1.png)
+![](/cfi-1.png)
 
 So, upon entry to a function, the CALL instruction that jumped to the function in question will have 
 pushed the previous program counter (from the RIP register) onto the stack. Then the function 
@@ -283,7 +283,7 @@ registers in the parent frame.)
 
 In case you need to use or read the raw register numbers, here they are for a few architectures:
 
-![](./cfi-2.png)
+![](/cfi-2.png)
 
 (x86 values taken from page 25 of [this doc][11]. x86-64 values from page 57 of [this doc]. ARM 
 taken from page 7 of [this doc][13].)
