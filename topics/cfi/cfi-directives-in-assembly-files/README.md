@@ -30,7 +30,7 @@ mov rbp, rsp
 
 This would make the stack look like this (remember that stacks grow *downwards* in memory):
 
-![](/cfi-1.png)
+![](./cfi-1.png)
 
 So, upon entry to a function, the CALL instruction that jumped to the function in question will have 
 pushed the previous program counter (from the RIP register) onto the stack. Then the function 
@@ -62,17 +62,17 @@ this post.
 [3]: https://sourceware.org/binutils/docs/as/CFI-directives.html
 [4]: http://www.dwarfstd.org/doc/DWARF4.pdf
 
-The tables that we need the assembler to emit for us are called Call Frame Information (CFI). (Not 
+The tables that we need the assembler to emit for us are called **Call Frame Information (CFI)**. (Not 
 to be confused with Control Flow Integrity, which is very different.) Based on that name, all the 
-assembler directives begin with .cfi\_.
+assembler directives begin with `.cfi_`.
 
-Next we need to define the Canonical Frame Address (CFA). This is the value of the stack pointer 
+Next we need to define the **Canonical Frame Address (CFA)**. This is the value of the stack pointer 
 just before the CALL instruction in the parent function. In the diagram above, it's the value 
 indicated by “RSP value before CALL”. Our first task will be to define data that allows the CFA to 
 be calculated for any given instruction.
 
 The CFI tables allow the CFA to be expressed as a register value plus an offset. For example, 
-immediately upon function entry the CFA is RSP + 8. (The eight byte offset is because the CALL 
+immediately upon function entry the CFA is `RSP + 8`. (The eight byte offset is because the CALL 
 instruction will have pushed the previous RIP on the stack.)
 
 As the function executes, however, the expression will probably change. If nothing else, after 
@@ -110,7 +110,8 @@ This is defining the CFA expression as a register plus offset. One of the things
 compilers do is express the registers as numbers rather than names. But, at least with GAS, you can 
 write names. (I've included a table of DWARF register numbers and names below in case you need it.)
 
-Getting back to the directive, this is just specifying what I discussed above: on entry to a function, the CFA is at RSP + 8.
+Getting back to the directive, this is just specifying what I discussed above: on entry to a 
+function, the CFA is at `RSP + 8`.
 
 ```asm
 push    rbp
@@ -151,7 +152,7 @@ table is left open at the end of the file.)
 The CFI tables for an object file can be dumped with objdump -W and, if you do that for the example 
 above, you'll see *two* tables: something called a CIE and something called an FDE.
 
-The CIE (Common Information Entry) table contains information common to all functions and it's worth 
+The **CIE (Common Information Entry)** table contains information common to all functions and it's worth 
 taking a look at it:
 
     … CIE
@@ -166,9 +167,9 @@ taking a look at it:
       DW_CFA_offset: r16 (rip) at cfa-8
 
 You can ignore everything until the `DW_CFA_`… lines at the end. They define CFI directives that are 
-common to all functions (that reference this CIE). The first is saying that the CFA is at RSP + 8, 
+common to all functions (that reference this CIE). The first is saying that the CFA is at `RSP + 8`, 
 which is what we had already defined at function entry. This means that *you don't need a CFI 
-directive at the beginning of the function*. Basically RSP + 8 is already the default.
+directive at the beginning of the function*. Basically `RSP + 8` is already the default.
 
 The second directive is something that we'll get to when we discuss saving registers.
 
@@ -234,7 +235,7 @@ Most of the time they'll be saved on the stack though because, if you had a call
 spare, you would be using it first.
 
 To indicate that a register is saved on the stack, use `cfi_offset`. In the same example as above 
-(see the stack diagram at the top) the caller's RBP is saved at CFA - 16 bytes. So, with saved 
+(see the stack diagram at the top) the caller's `RBP` is saved at `CFA - 16` bytes. So, with saved 
 registers annotated too, it would start like this:
 
 ```asm
@@ -283,7 +284,7 @@ registers in the parent frame.)
 
 In case you need to use or read the raw register numbers, here they are for a few architectures:
 
-![](/cfi-2.png)
+![](./cfi-2.png)
 
 (x86 values taken from page 25 of [this doc][11]. x86-64 values from page 57 of [this doc]. ARM 
 taken from page 7 of [this doc][13].)
