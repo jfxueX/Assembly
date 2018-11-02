@@ -173,7 +173,7 @@ directive at the beginning of the function*. Basically `RSP + 8` is already the 
 
 The second directive is something that we'll get to when we discuss saving registers.
 
-If we look at the FDE (Frame Description Entry) for the example function that we defined, we see 
+If we look at the **FDE (Frame Description Entry)** for the example function that we defined, we see 
 that it reflects the CFI directives from the assembly:
 
     … FDE cie=…
